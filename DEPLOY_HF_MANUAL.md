@@ -131,14 +131,14 @@ Certifique-se de ter estes arquivos:
 
 ### Build falha
 
-**Solução**: 
+**Solução**:
 - Verifique os logs do build
 - Confirme que `requirements.txt` está correto
 - Verifique se `app.py` está na raiz
 
 ### Erro de autenticação Git
 
-**Solução**: 
+**Solução**:
 - Use Personal Access Token ao invés de senha
 - Ou configure SSH keys no Hugging Face
 
@@ -153,4 +153,3 @@ Certifique-se de ter estes arquivos:
 ---
 
 **Tempo estimado**: 5-10 minutos (upload manual) ou 2-3 minutos (Git)
-

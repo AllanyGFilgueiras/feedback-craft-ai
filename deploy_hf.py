@@ -22,14 +22,14 @@ def main():
         print("❌ Erro: Forneça seu username do Hugging Face")
         print("Uso: python3 deploy_hf.py SEU-USUARIO-HF")
         sys.exit(1)
-    
+
     username = sys.argv[1]
     space_name = "feedback-craft-ai"
     repo_id = f"{username}/{space_name}"
-    
+
     print("🤗 Preparando deploy para Hugging Face Spaces...")
     print()
-    
+
     # Verificar login
     api = HfApi()
     try:
@@ -48,9 +48,9 @@ def main():
         api = HfApi()
         user_info = api.whoami()
         print(f"✅ Autenticado como: {user_info.get('name', 'Usuário')}")
-    
+
     print()
-    
+
     # Verificar se Space existe
     try:
         api.repo_info(repo_id, repo_type="space")
@@ -76,37 +76,37 @@ def main():
         else:
             print(f"❌ Erro: {e}")
             sys.exit(1)
-    
+
     # Verificar arquivos necessários
     print()
     print("📋 Verificando arquivos necessários...")
-    
+
     required_files = [
         "app.py",
         "requirements.txt",
         "huggingface.yaml",
     ]
-    
+
     required_dirs = [
         "core",
         "prompts",
     ]
-    
+
     missing = []
     for file in required_files:
         if not Path(file).exists():
             missing.append(file)
-    
+
     for dir_name in required_dirs:
         if not Path(dir_name).is_dir():
             missing.append(f"{dir_name}/")
-    
+
     if missing:
         print(f"❌ Arquivos/pastas faltando: {', '.join(missing)}")
         sys.exit(1)
-    
+
     print("✅ Todos os arquivos necessários estão presentes")
-    
+
     # Instruções para Git push
     print()
     print("📡 Para fazer upload dos arquivos, você tem duas opções:")
@@ -136,4 +136,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
