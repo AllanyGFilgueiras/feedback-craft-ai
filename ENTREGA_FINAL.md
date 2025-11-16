@@ -57,6 +57,7 @@ feedback-craft-ai/
 ### 1. `app.py` - Interface Principal
 
 Interface Gradio completa com:
+
 - Input de feedback
 - Seletores (tipo, tom, formalidade)
 - Outputs organizados (aprimorado, curto, FIS, sugestões)
@@ -66,6 +67,7 @@ Interface Gradio completa com:
 ### 2. `core/validators.py` - Validação
 
 Validação robusta de:
+
 - Texto de feedback (tamanho, formato)
 - Tipo de feedback
 - Tom
@@ -97,6 +99,7 @@ Validação robusta de:
 ### 6. `prompts/master_prompt.txt` - Template Mestre
 
 Template profissional com:
+
 - Princípios fundamentais
 - Instruções claras
 - Formato de saída esperado
@@ -169,7 +172,7 @@ emoji: 🎯
 sdk: gradio
 sdk_version: 4.0.0
 app_file: app.py
-python_version: "3.10"
+python_version: '3.10'
 compute_requirements:
   cpu: 2
   memory: 8Gi
@@ -217,7 +220,7 @@ O documento `GITHUB_GUIDE.md` inclui:
 - ✅ Estrutura recomendada do repositório
 - ✅ Configuração inicial completa
 - ✅ Padrão de mensagens de commit (Conventional Commits)
-- ✅ Estrutura de branches (main, develop, feature/*)
+- ✅ Estrutura de branches (main, develop, feature/\*)
 - ✅ Processo de releases (SemVer)
 - ✅ Templates de Issues e PRs
 - ✅ Boas práticas
