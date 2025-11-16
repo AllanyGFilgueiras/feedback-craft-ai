@@ -243,13 +243,15 @@ def create_interface():
             outputs=[enhanced_output, short_output, fis_output, suggestions_output, copy_text_output]
         )
 
-        # Copy button functionality
-        def copy_to_clipboard(text):
-            """Copy text to clipboard (fallback function)."""
-            return text  # Return text for user to manually copy
+        # Copy button functionality - simplified for Gradio 4.0.0
+        # The text box is already interactive, so users can select and copy manually
+        # For Gradio 4.0.0 compatibility, we'll just show a message
+        def show_copy_message(text):
+            """Show message that text is ready to copy."""
+            return text
         
         copy_btn.click(
-            fn=copy_to_clipboard,
+            fn=show_copy_message,
             inputs=[copy_text_output],
             outputs=[copy_text_output]
         )
