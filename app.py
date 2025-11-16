@@ -247,7 +247,7 @@ def create_interface():
         def copy_text(text):
             """Return text for copying."""
             return text
-        
+
         copy_btn.click(
             fn=copy_text,
             inputs=[copy_text_output],
