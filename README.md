@@ -367,9 +367,9 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 **Seu Nome**
 
-- GitHub: [@seu-usuario](https://github.com/seu-usuario)
-- LinkedIn: [Seu Perfil](https://linkedin.com/in/seu-perfil)
-- Email: seu.email@exemplo.com
+- GitHub: [@AllanyGFilgueiras](https://github.com/AllanyGFilgueiras)
+- LinkedIn: [allanyfilgueiras](https://linkedin.com/in/allanyfilgueiras/)
+- Email: allanyfilgueiras@gmail.com
 
 ---
 
