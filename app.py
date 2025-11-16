@@ -243,11 +243,15 @@ def create_interface():
             outputs=[enhanced_output, short_output, fis_output, suggestions_output, copy_text_output]
         )
 
-        # Copy button functionality (using JavaScript)
+        # Copy button functionality
+        def copy_to_clipboard(text):
+            """Copy text to clipboard (fallback function)."""
+            return text  # Return text for user to manually copy
+        
         copy_btn.click(
-            fn=None,
+            fn=copy_to_clipboard,
             inputs=[copy_text_output],
-            js="(text) => { navigator.clipboard.writeText(text); return 'Copiado!' }"
+            outputs=[copy_text_output]
         )
 
     return app
