@@ -89,29 +89,48 @@ class ModelClient:
                 json=payload,
                 timeout=60
             )
+            
+            # Check if model is loading (503 status)
+            if response.status_code == 503:
+                # Model is loading, use fallback with message
+                fallback_response = self._generate_fallback(prompt)
+                # Add note about model loading
+                data = json.loads(fallback_response)
+                data["observacoes"] = "⚠️ Modelo está carregando. Aguarde alguns segundos e tente novamente. Usando melhoria básica enquanto isso."
+                return json.dumps(data, ensure_ascii=False, indent=2)
+            
             response.raise_for_status()
-
+            
             result = response.json()
-
+            
             # Handle different response formats
             if isinstance(result, list) and len(result) > 0:
                 if "generated_text" in result[0]:
                     return result[0]["generated_text"]
                 elif "text" in result[0]:
                     return result[0]["text"]
-
+            
             if isinstance(result, dict):
                 if "generated_text" in result:
                     return result["generated_text"]
                 elif "text" in result:
                     return result["text"]
-
+            
             # Fallback: return as string
             return str(result)
-
+            
+        except requests.exceptions.HTTPError as e:
+            # HTTP error (401, 403, etc.) - likely API key issue
+            fallback_response = self._generate_fallback(prompt)
+            data = json.loads(fallback_response)
+            data["observacoes"] = f"⚠️ Erro na API ({e.response.status_code}). Usando melhoria básica. Configure HF_API_KEY para usar modelo completo."
+            return json.dumps(data, ensure_ascii=False, indent=2)
         except (requests.exceptions.RequestException, Exception) as e:
             # Fallback response for demo purposes (catch all exceptions)
-            return self._generate_fallback(prompt)
+            fallback_response = self._generate_fallback(prompt)
+            data = json.loads(fallback_response)
+            data["observacoes"] = f"⚠️ Erro de conexão. Usando melhoria básica. Erro: {str(e)[:100]}"
+            return json.dumps(data, ensure_ascii=False, indent=2)
 
     def _generate_local(
         self,
@@ -128,33 +147,36 @@ class ModelClient:
     def _generate_fallback(self, prompt: str) -> str:
         """
         Fallback response when API is unavailable.
-        This provides a basic structure for demonstration.
+        This provides a basic structure for demonstration with improved text processing.
         """
         # Extract feedback text from prompt (simple extraction)
         if "TEXTO ORIGINAL PARA MELHORAR:" in prompt:
             parts = prompt.split("TEXTO ORIGINAL PARA MELHORAR:")
             if len(parts) > 1:
                 original_text = parts[1].split("INSTRUÇÕES:")[0].strip()
-
-                # Basic improvement (in production, this would be much more sophisticated)
-                improved = original_text.capitalize()
-                if not improved.endswith('.'):
-                    improved += '.'
+                
+                # Improved text processing (better than just capitalize)
+                improved = self._improve_text_basic(original_text)
+                
+                # Create short version
+                words = improved.split()
+                short_version = " ".join(words[:15]) + ("..." if len(words) > 15 else "")
 
                 return json.dumps({
                     "feedback_aprimorado": improved,
-                    "versao_curta": improved[:100] + "..." if len(improved) > 100 else improved,
+                    "versao_curta": short_version,
                     "fato_impacto_sugestao": {
-                        "fato": "Feedback recebido para análise",
-                        "impacto": "Oportunidade de melhoria na comunicação",
-                        "sugestao": "Revisar e aplicar as sugestões fornecidas"
+                        "fato": "Feedback recebido para análise e melhoria",
+                        "impacto": "Oportunidade de aprimorar a comunicação profissional",
+                        "sugestao": "Revisar o feedback aprimorado e aplicar as sugestões fornecidas"
                     },
                     "sugestoes_extras": [
                         "Seja específico sobre comportamentos observados",
                         "Foque em ações, não em características pessoais",
-                        "Ofereça exemplos concretos quando possível"
+                        "Ofereça exemplos concretos quando possível",
+                        "Use linguagem respeitosa e construtiva"
                     ],
-                    "observacoes": "Feedback processado. Em produção, use um modelo LLM completo."
+                    "observacoes": "⚠️ Modo fallback ativo. Para melhorias mais sofisticadas, configure uma chave de API do Hugging Face ou use um modelo local."
                 }, ensure_ascii=False, indent=2)
 
         return json.dumps({
@@ -168,6 +190,54 @@ class ModelClient:
             "sugestoes_extras": [],
             "observacoes": "Erro no processamento do feedback."
         }, ensure_ascii=False, indent=2)
+    
+    def _improve_text_basic(self, text: str) -> str:
+        """
+        Basic text improvement when LLM is not available.
+        This is a simple rule-based improvement.
+        """
+        if not text:
+            return text
+        
+        # Capitalize first letter
+        improved = text.strip().capitalize()
+        
+        # Ensure it ends with punctuation
+        if improved and improved[-1] not in '.!?':
+            improved += '.'
+        
+        # Replace common informal patterns
+        replacements = {
+            'vc': 'você',
+            'pq': 'porque',
+            'tb': 'também',
+            'tbm': 'também',
+            'nao': 'não',
+            'eh': 'é',
+            'ta': 'está',
+            'to': 'estou',
+        }
+        
+        words = improved.split()
+        improved_words = []
+        for word in words:
+            word_lower = word.lower().rstrip('.,!?;:')
+            if word_lower in replacements:
+                # Preserve capitalization and punctuation
+                punct = word[len(word_lower):]
+                improved_words.append(replacements[word_lower].capitalize() + punct)
+            else:
+                improved_words.append(word)
+        
+        improved = ' '.join(improved_words)
+        
+        # Add professional touch
+        if not any(improved.startswith(prefix) for prefix in ['Sua', 'Você', 'O', 'A', 'Os', 'As']):
+            # Try to make it more professional
+            if improved.lower().startswith('você'):
+                improved = improved[0].upper() + improved[1:]
+        
+        return improved
 
     def parse_response(self, response_text: str) -> Dict[str, Any]:
         """
