@@ -9,7 +9,7 @@
 
 **Transforme feedbacks rascunhados em comunicações profissionais, claras e acionáveis**
 
-[🚀 Demo no Hugging Face](https://huggingface.co/spaces/seu-usuario/feedback-craft-ai) • [📖 Documentação](#documentação) • [🐛 Reportar Bug](https://github.com/seu-usuario/feedback-craft-ai/issues)
+[🚀 Demo no Hugging Face](https://huggingface.co/spaces/AllanyFilgueiras/feedback-craft-ai) • [📖 Documentação](#documentação) • [🐛 Reportar Bug](https://huggingface.co/spaces/AllanyFilgueiras/feedback-craft-ai/issues)
 
 </div>
 
